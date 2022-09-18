@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_landing_page_landing_pages",
+  "info": {
+    "displayName": "Landing Page",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "Carousel": {
+      "type": "component",
+      "repeatable": true,
+      "component": "carousel.carousel-display"
+    },
+    "DealsOfTheDay": {
+      "type": "component",
+      "repeatable": true,
+      "component": "image.image"
+    },
+    "TopPicks": {
+      "type": "component",
+      "repeatable": true,
+      "component": "image.image"
+    }
+  }
+}
