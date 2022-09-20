@@ -11,9 +11,13 @@
   "dependencies": {
     "flowbite": "^1.5.3",
     "flowbite-react": "^0.1.11",
+    "js-cookie": "^3.0.1",
+    "jwt-decode": "^3.1.2",
     "next": "12.3.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-icons": "^4.4.0",
+    "strapi-sdk-javascript": "^0.3.3"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.11",
