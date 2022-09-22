@@ -48,7 +48,8 @@ class MyApp extends App {
   };
 
   render() {
-    const { Component, pageProps, user } = this.props;
+    const { Component, pageProps } = this.props;
+    const {user} = this.state
 
     return (
       <AppContext.Provider
@@ -62,8 +63,11 @@ class MyApp extends App {
           user: this.state.user,
           isAuthenticated: !!this.state.user,
           setUser: this.setUser,
-        }} />
-        <Component {...pageProps} />
+        }}><Component user={{
+          user: this.state.user,
+          isAuthenticated: !!this.state.user,
+          setUser: this.setUser,
+        }}  /></NavBar>
         <Footer />
       </AppContext.Provider>
     );

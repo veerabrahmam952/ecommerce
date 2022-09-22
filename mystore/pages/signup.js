@@ -1,5 +1,6 @@
 import React from 'react'
-import { TextInput, Label, Checkbox, Button, Card } from 'flowbite-react'
+import Router from 'next/router';
+import { TextInput, Label, Checkbox, Button, Card, Alert } from 'flowbite-react'
 import {
     HiAdjustments,
     HiArrowNarrowRight,
@@ -21,22 +22,25 @@ import {
     HiUserCircle,
     HiViewBoards,
     HiX,
-  } from "react-icons/hi";
+} from "react-icons/hi";
+import { registerUser } from '../lib/auth';
 
 class signup extends React.Component {
     constructor(props) {
         super(props);
+        this.handleSubmit = this.handleSubmit.bind(this);
         this.state = {
             data: {
                 email: "",
                 password: ""
             },
             loading: false,
-            error: ""
+            error: "",
+            registerd: false
         };
     }
     componentDidMount() {
-        if (this.props.isAuthenticated) {
+        if (this.props.user.isAuthenticated) {
             Router.push("/"); // redirect if you're already logged in
         }
     }
@@ -46,7 +50,9 @@ class signup extends React.Component {
         data[propertyName] = event.target.value;
         this.setState({ data });
     }
-    onSubmit() {
+    async handleSubmit(e) {
+        debugger;
+        e.preventDefault();
         const {
             data: { email, username, password }
         } = this.state;
@@ -54,17 +60,70 @@ class signup extends React.Component {
 
         this.setState({ loading: true });
 
-        //strapiLogin(email, password).then(() => console.log(Cookies.get("user")));
+        await registerUser(username, email, password).then((res) => {
+            debugger;
+            if (res.data.error) {
+                console.log(res.data.error.message);
+                this.setState({ error: res.data.error.message });
+            } else {
+                this.setState({ loading: false });
+                // set authed User in global context to update header/app state
+                this.setState({ user: res.data.user });
+                this.setState({ registerd: true });
+
+                Router.push("/").then(()=>{
+                    Router.reload();
+                });
+            }
+
+        })
+            .catch((e) => {
+                this.setState({ loading: false });
+                this.setState({ registerd: false });
+                this.setState({ error: e.message });
+                //this.setState({error: error.response.data});
+            });
+    }
+    componentDidUpdate() {
+        if (this.props.user.isAuthenticated) {
+            Router.push("/").then(()=>{
+                Router.reload();
+            });
+        }
     }
     render() {
-        const { error } = this.state;
+        const { error, registerd } = this.state;
         return (
             <div className="max-w-xl container mx-auto flex flex-wrap p-5 flex-col">
+                {error != "" ?
+                    (<>
+                        <Alert
+                            color="failure"
+                        >
+                            <span>
+                                <span className="font-medium">
+                                    {error}.
+                                </span>
+                            </span>
+                        </Alert>
+                    </>) :
+                    (<>
+                    </>)}
+                {registerd ? (<><Alert
+                    color="success"
+                    onDismiss={function onDismiss() { return alert("Alert dismissed!") }}
+                >
+                    <span>
+                        <span className="font-medium">
+                            Account registered successfully...!
+                        </span>
+                    </span>
+                </Alert></>) : (<></>)}
                 <Card>
                     <h5 className="text-2xl font-bold text-center tracking-tight text-gray-900 dark:text-white">
                         Signup
                     </h5>
-                    <form className="flex flex-col gap-4">
+                    <form className="flex flex-col gap-4" onSubmit={this.handleSubmit}>
                         <div>
                             <div className="mb-2 block">
                                 <Label
@@ -78,6 +137,7 @@ class signup extends React.Component {
                                 placeholder="test123"
                                 required={true}
                                 addon="@"
+                                onInput={this.onChange.bind(this, "username")}
                             />
                         </div>
                         <div>
@@ -93,6 +153,7 @@ class signup extends React.Component {
                                 placeholder="name@flowbite.com"
                                 required={true}
                                 icon={HiMail}
+                                onInput={this.onChange.bind(this, "email")}
                             />
                         </div>
                         <div>
@@ -107,11 +168,12 @@ class signup extends React.Component {
                                 type="password"
                                 required={true}
                                 shadow={true}
+                                onInput={this.onChange.bind(this, "password")}
                             />
                         </div>
 
                         <div className="flex items-center gap-2">
-                            <Checkbox id="agree" />
+                            <Checkbox id="agree" required={true} />
                             <Label htmlFor="agree">
                                 I agree with the{' '}
                                 <a
@@ -124,7 +186,7 @@ class signup extends React.Component {
                         </div>
 
                         <div className="inline-flex justify-center">
-                            <Button type="submit">
+                            <Button type='submit'>
                                 Signup
                             </Button>
                         </div>

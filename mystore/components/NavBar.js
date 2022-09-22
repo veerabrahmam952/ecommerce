@@ -5,6 +5,7 @@ import defaultPage from "../hocs/defaultPage";
 import Cookie from "js-cookie";
 import Router  from 'next/router';
 
+import {logout}  from "../lib/auth";
 
 // const NavBar = () => {
 //     return (
@@ -114,17 +115,24 @@ class NavBar extends React.Component{
         return { pageProps, isAuthenticated };
       }
       onSignIn(){
-        Router.push("/signin");
+        Router.push("/signin").then(()=>{
+            Router.reload();
+        });
       }
-      onSignOut(){
-        Router.push("/");
-      }
+    onSignOut(){
+        logout();
+        Router.push("/").then(()=>{
+            Router.reload();
+        });
+    }
     render(){
         debugger;
         const { isAuthenticated, user } = this.props.user;
+        const {children} = this.props;
         console.log(isAuthenticated);
         console.log(user);
         return (
+            <div>
             <header className="text-gray-600 body-font">
                 <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
                     <a href="/" className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
@@ -184,7 +192,7 @@ class NavBar extends React.Component{
                                 </Dropdown.Item></>)}
                             </Dropdown>
                             
-                            <Navbar.Toggle />
+                            {/* <Navbar.Toggle /> */}
                             
                         </Navbar>
     
@@ -216,6 +224,9 @@ class NavBar extends React.Component{
                     </button> */}
                 </div>
             </header>
+            <div>{children}</div>
+            </div>
+            
         )
     }
 }

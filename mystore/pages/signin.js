@@ -32,6 +32,7 @@ import Router from "next/router";
 class signin extends React.Component {
     constructor(props) {
         super(props);
+        this.handleSubmit = this.handleSubmit.bind(this);
         this.state = {
             data: {
                 email: "",
@@ -43,7 +44,7 @@ class signin extends React.Component {
     }
     componentDidMount() {
         debugger;
-        if (this.props.isAuthenticated) {
+        if (this.props.user.isAuthenticated) {
             Router.push("/"); // redirect if you're already logged in
         }
     }
@@ -53,8 +54,9 @@ class signin extends React.Component {
         data[propertyName] = event.target.value;
         this.setState({ data });
     }
-    async onSubmit() {
+    async handleSubmit(e) {
         debugger;
+        e.preventDefault();
         const {
             data: { email, username, password }
         } = this.state;
@@ -72,14 +74,24 @@ class signin extends React.Component {
             // set authed User in global context to update header/app state
             this.setState({ user: res.data.user });
             
-            Router.push("/");
+            Router.push("/").then(()=>{
+                Router.reload();
+            });
         })
         .catch((error) => {
             this.setState({ loading: false });
             this.setState({error: error.response.data});
         });
     }
+    componentDidUpdate() {
+        if (this.props.user.isAuthenticated) {
+            Router.push("/").then(()=>{
+                Router.reload();
+            });
+        }
+    }
     render() {
+        debugger;
         const { error } = this.state;
         return (
             <div className="max-w-xl container mx-auto flex flex-wrap p-5 flex-col">
@@ -87,7 +99,7 @@ class signin extends React.Component {
                     <h5 className="text-2xl font-bold text-center tracking-tight text-gray-900 dark:text-white">
                         Login
                     </h5>
-                    <form className="flex flex-col gap-4">
+                    <form className="flex flex-col gap-4" onSubmit={this.handleSubmit}>
                         <div>
                             <div className="mb-2 block">
                                 <Label
@@ -138,7 +150,7 @@ class signin extends React.Component {
                         </div>
 
                         <div className="inline-flex justify-center">
-                            <Button onClick={this.onSubmit.bind(this)}>
+                            <Button type='submit'>
                                 Login
                             </Button>
                         </div>
