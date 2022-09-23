@@ -164,6 +164,27 @@ export const login = (identifier, password) => {
   });
 };
 
+export const grtMenus = () => {
+  //prevent function from being ran on the server
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`${API_URL}/api/menus`)
+      .then((res) => {
+        console.log(res);
+        resolve(res);
+        //redirect back to home page for restaurance selection
+      })
+      .catch((error) => {
+        //reject the promise and pass the error object back to the form
+        reject(error);
+      });
+  });
+};
+
 export const logout = () => {
   debugger;
   //remove token and user cookie

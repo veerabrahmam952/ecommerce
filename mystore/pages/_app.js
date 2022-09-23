@@ -5,6 +5,7 @@ import AppContext from "../context/AppContext";
 import App from "next/app";
 import React from "react";
 import Cookie from "js-cookie";
+import { grtMenus } from "../lib/auth";
 
 // function MyApp({ Component, pageProps }) {
 //   return <><NavBar /><Component {...pageProps} /><Footer /></>
@@ -15,14 +16,24 @@ import Cookie from "js-cookie";
 class MyApp extends App {
   state = {
     user: null,
+    menus: []
   };
-  
 
-  componentDidMount() {
+
+  async componentDidMount() {
     debugger;
     // grab token value from cookie
     const token = Cookie.get("token");
-
+    // fetch menu items
+    await grtMenus().then((res) => {
+      debugger;
+      console.log(res);
+      // set authed User in global context to update header/app state
+      this.setState({ menus: res.data });
+    })
+      .catch((error) => {
+        console.log(error);
+      });
     if (token) {
       // authenticate the token on the server and place set user object
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/me`, {
@@ -49,25 +60,28 @@ class MyApp extends App {
 
   render() {
     const { Component, pageProps } = this.props;
-    const {user} = this.state
+    const { user } = this.state;
 
     return (
       <AppContext.Provider
         value={{
           user: this.state.user,
+          menus: this.state.menus,
           isAuthenticated: !!this.state.user,
           setUser: this.setUser,
         }}
       >
         <NavBar user={{
           user: this.state.user,
+          menus: this.state.menus,
           isAuthenticated: !!this.state.user,
           setUser: this.setUser,
         }}><Component user={{
           user: this.state.user,
+          menus: this.state.menus,
           isAuthenticated: !!this.state.user,
           setUser: this.setUser,
-        }}  /></NavBar>
+        }} /></NavBar>
         <Footer />
       </AppContext.Provider>
     );
