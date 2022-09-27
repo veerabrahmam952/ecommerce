@@ -30,7 +30,7 @@ class MenuList extends React.Component {
         super(props);
     }
     componentDidMount() {
-        
+
     }
     render() {
         debugger;
@@ -51,20 +51,19 @@ class MenuList extends React.Component {
                                     {_menu.attributes.menuItemName}
                                 </Badge>
                             </div>}
-                        >
-                            <Dropdown.Item>
-                                Dashboard
-                            </Dropdown.Item>
-                            <Dropdown.Item>
-                                Settings
-                            </Dropdown.Item>
-                            <Dropdown.Item>
-                                Earnings
-                            </Dropdown.Item>
-                            <Dropdown.Divider />
-                            <Dropdown.Item>
-                                Sign Out
-                            </Dropdown.Item>
+                        >{
+                                _menu?.attributes?.sub_menus?.data?.map((_submenu) => (<>
+                                    <Dropdown.Item>
+                                        {_submenu.attributes.SubMenuItemName}
+                                    </Dropdown.Item>
+                                    <Dropdown.Divider />
+                                    {_submenu?.attributes?.categories?.data?.map((_cat) => (<>
+                                        <Dropdown.Item>
+                                            {_cat.attributes.CategoryName}
+                                        </Dropdown.Item>
+                                    </>))}
+                                </>))
+                            }
                         </Dropdown>
                     </>))}
 

@@ -172,7 +172,7 @@ export const grtMenus = () => {
 
   return new Promise((resolve, reject) => {
     axios
-      .get(`${API_URL}/api/menus`)
+      .get(`${API_URL}/api/menus?populate[sub_menus][populate][categories][populate]=*`)
       .then((res) => {
         console.log(res);
         resolve(res);

@@ -226,7 +226,7 @@ class NavBar extends React.Component {
                     </div>
                 </header>
                 <MenuList menuItems={menus} />
-                <div>{children}</div>
+                <div className='container mx-auto flex flex-wrap p-5 flex-col'>{children}</div>
             </div>
 
         )
