@@ -52,10 +52,11 @@ class MenuList extends React.Component {
                                 </Badge>
                             </div>}
                         >{
-                                _menu?.attributes?.sub_menus?.data?.map((_submenu) => (<>
+                                _menu?.attributes?.sub_menus?.data?.map((_submenu) => (<><div className="bg-blue-100">
                                     <Dropdown.Item>
                                         {_submenu.attributes.SubMenuItemName}
                                     </Dropdown.Item>
+                                </div>
                                     <Dropdown.Divider />
                                     {_submenu?.attributes?.categories?.data?.map((_cat) => (<>
                                         <Dropdown.Item>
